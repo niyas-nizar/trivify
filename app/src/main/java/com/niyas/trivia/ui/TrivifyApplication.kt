@@ -1,8 +1,10 @@
 package com.niyas.trivia.ui
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class TrivifyApplication : Application() {
 
     override fun onCreate() {

@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.niyas.trivia"
+    namespace = "com.niyas.trivify"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.niyas.trivia"
+        applicationId = "com.niyas.trivify"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

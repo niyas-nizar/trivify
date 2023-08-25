@@ -1,4 +1,4 @@
-package com.niyas.trivia
+package com.niyas.trivify
 
 import org.junit.Test
 

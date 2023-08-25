@@ -1,4 +1,4 @@
-package com.niyas.trivia.ui.theme
+package com.niyas.trivify.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

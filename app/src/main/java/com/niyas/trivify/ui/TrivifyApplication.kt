@@ -1,4 +1,4 @@
-package com.niyas.trivia.ui
+package com.niyas.trivify.ui
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

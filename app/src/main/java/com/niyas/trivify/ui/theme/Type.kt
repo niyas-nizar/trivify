@@ -1,4 +1,4 @@
-package com.niyas.trivia.ui.theme
+package com.niyas.trivify.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

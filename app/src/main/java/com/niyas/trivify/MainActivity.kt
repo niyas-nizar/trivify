@@ -1,4 +1,4 @@
-package com.niyas.trivia
+package com.niyas.trivify
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.niyas.trivia.ui.theme.TrivifyTheme
+import com.niyas.trivify.ui.theme.TrivifyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.niyas.trivia.di
+package com.niyas.trivify.di
 
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.niyas.trivify.ui.categoryList.CategoryListScreen
 import com.niyas.trivify.ui.theme.TrivifyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,11 +25,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TrivifyTheme {
+            TrivifyTheme(darkTheme = false, dynamicColor = false) {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "category_list_screen") {
                     composable("category_list_screen") {
-
+                        CategoryListScreen(navController = navController, userName = "Niyas")
                     }
                     composable(
                         "questionnaire_screen/{selected_category}",

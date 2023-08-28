@@ -39,8 +39,14 @@ class CategoryListViewModel @Inject constructor(
 
     private fun injectDrawables(triviaCategories: MutableList<TriviaCategory>): List<TriviaCategory> {
         return triviaCategories.map {
-            it.copy(image = R.drawable.side_menu_iv)
+            val image = when (it.id) {
+                13 -> R.drawable.musical_iv
+                14 -> R.drawable.television_iv
+                15 -> R.drawable.video_games_iv
+                else -> R.drawable.board_games_iv
+            }
+            it.copy(image = image)
         }
-
     }
+
 }

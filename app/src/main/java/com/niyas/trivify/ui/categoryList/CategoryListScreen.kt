@@ -1,9 +1,10 @@
 package com.niyas.trivify.ui.categoryList
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,32 +22,35 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.niyas.trivify.data.remote.responses.categoryList.TriviaCategory
-import com.niyas.trivify.ui.theme.fontFamily
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import com.niyas.trivify.R
+import com.niyas.trivify.data.remote.responses.categoryList.TriviaCategory
 import com.niyas.trivify.ui.theme.CategoryBoxBackground
+import com.niyas.trivify.ui.theme.White
+import com.niyas.trivify.ui.theme.fontFamily
+import com.niyas.trivify.util.JsonConverters.toJson
+import kotlin.random.Random
 
 @Composable
 fun CategoryListScreen(
@@ -121,63 +125,6 @@ fun CategoriesList(
 }
 
 @Composable
-fun CategoriesSingleItem(
-    navController: NavController,
-    modifier: Modifier,
-    category: TriviaCategory
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .shadow(1.dp, shape = RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(16.dp))
-            .aspectRatio(1f)
-            .background(CategoryBoxBackground)
-            /*.background(Brush.verticalGradient(
-                listOf(Color("FEFDFF"), Color("#FFFFFF")
-            ))*/
-            .clickable {
-                navController.navigate("questionnaire_screen/${category.id}")
-            }
-    ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            category.image?.let { image ->
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    painter = painterResource(id = image),
-                    contentDescription = "${category.name} Image"
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = trimCategoryName(category.name), fontFamily = fontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp, textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
-            )
-        }
-    }
-
-}
-
-fun trimCategoryName(categoryName: String): String {
-    val stringsToRemove = listOf("Entertainment:", "Science:")
-    var updateCategoryName = categoryName
-    stringsToRemove.forEach {
-        if (categoryName.startsWith(it))
-            updateCategoryName = categoryName.removePrefix(it)
-    }
-    return updateCategoryName
-}
-
-@Composable
 fun CategoriesRow(
     rowIndex: Int,
     categories: List<TriviaCategory>,
@@ -202,4 +149,94 @@ fun CategoriesRow(
         }
         Spacer(modifier = Modifier.height(12.dp))
     }
+}
+
+
+@Composable
+fun CategoriesSingleItem(
+    navController: NavController,
+    modifier: Modifier,
+    category: TriviaCategory
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .shadow(1.dp, shape = RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .aspectRatio(1f)
+            .background(CategoryBoxBackground)
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        CategoryBoxBackground, White
+                    )
+                )
+            )
+            .clickable {
+                navController.navigate("questionnaire_level_screen/${category.toJson()}")
+            }
+    ) {
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            category.image?.let { image ->
+                Image(
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .height(60.dp)
+                        .width(60.dp),
+                    painter = painterResource(id = image),
+                    contentDescription = "${category.name} Image"
+                )
+            }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = trimCategoryName(category.name), fontFamily = fontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp, textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp)
+                )
+
+            }
+            val randomProgress = Random.nextFloat() * (1 - 0) + 0
+            CustomLinearProgressIndicator(randomProgress)
+        }
+    }
+}
+
+
+@Composable
+fun CustomLinearProgressIndicator(indicatorProgress: Float) {
+    var progress by remember { mutableStateOf(0f) }
+    val progressAnimDuration = 1500
+    val progressAnimation by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
+        label = "LinearProgressIndicator"
+    )
+    LinearProgressIndicator(
+        modifier = Modifier
+            .clip(CircleShape)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp),
+        progress = progressAnimation
+    )
+    LaunchedEffect(indicatorProgress) {
+        progress = indicatorProgress
+    }
+}
+
+fun trimCategoryName(categoryName: String): String {
+    val stringsToRemove = listOf("Entertainment:", "Science:")
+    var updateCategoryName = categoryName
+    stringsToRemove.forEach {
+        if (categoryName.startsWith(it))
+            updateCategoryName = categoryName.removePrefix(it)
+    }
+    return updateCategoryName
 }

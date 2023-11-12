@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,9 +48,9 @@ import androidx.navigation.NavController
 import com.niyas.trivify.R
 import com.niyas.trivify.data.remote.responses.categoryList.TriviaCategory
 import com.niyas.trivify.ui.theme.CategoryBoxBackground
-import com.niyas.trivify.ui.theme.White
 import com.niyas.trivify.ui.theme.fontFamily
 import com.niyas.trivify.util.JsonConverters.toJson
+import com.niyas.trivify.util.Screens.LEVEL_SELECTION_SCREEN
 import kotlin.random.Random
 
 @Composable
@@ -168,12 +169,12 @@ fun CategoriesSingleItem(
             .background(
                 Brush.verticalGradient(
                     listOf(
-                        CategoryBoxBackground, White
+                        CategoryBoxBackground, Color.White
                     )
                 )
             )
             .clickable {
-                navController.navigate("questionnaire_level_screen/${category.toJson()}")
+                navController.navigate("$LEVEL_SELECTION_SCREEN/${category.toJson()}")
             }
     ) {
         Column(
